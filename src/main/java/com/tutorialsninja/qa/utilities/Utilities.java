@@ -12,4 +12,8 @@ public class Utilities
 			Date date = new Date();
 			return date.toString().replace(" ", "_").replace(":", "_")+"@gmail.com";
 		} 
+		
+		public static final int IMPLICIT_WAIT_TIMER=10;
+		public static final int PAGE_LOAD_TIMER=10;
+		
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [TutorialsNinja Automated Suit]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="TutorilsNinja TestCases(failed)">
+    <classes>
+      <class name="com.tutorialsninja.qa.testcases.Login">
+        <methods>
+          <include name="verifyLoginWithInvalidEmailvalidPassword"/>
+          <include name="tearDown"/>
+          <include name="verifyLoginWithValidEmailInvalidPassword"/>
+          <include name="setup"/>
+          <include name="verifyLoginWithInvalidCredentials"/>
+          <include name="verifyLoginWithoutCredentials"/>
+        </methods>
+      </class> <!-- com.tutorialsninja.qa.testcases.Login -->
+    </classes>
+  </test> <!-- TutorilsNinja TestCases(failed) -->
+</suite> <!-- Failed suite [TutorialsNinja Automated Suit] -->

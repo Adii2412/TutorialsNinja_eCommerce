@@ -19,11 +19,14 @@ import com.tutorialsninja.qa.utilities.Utilities;
 public class Register extends Base
 {
 	WebDriver driver;
+	public Register() {
+		super();
+	}
 	
 	@BeforeMethod
 	public void setup()
 	{
-		driver =initializeDriver("chrome");
+		driver =initializeDriver(prop.getProperty("browser"));
 		driver.findElement(By.xpath("//span[normalize-space()='My Account']")).click();
 		driver.findElement(By.linkText("Register")).click();
 	}
@@ -32,17 +35,17 @@ public class Register extends Base
 	public void verifyRegisteringAccountWithMandatoryFields() 
 	{
 		
-		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys("Adinath");
-		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys("Mhetar");
+		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys(dataprop.getProperty("firstName"));
+		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys(dataprop.getProperty("lastName"));
 		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-telephone")).sendKeys("8928504071");
-		driver.findElement(By.id("input-password")).sendKeys("12345");
-		driver.findElement(By.id("input-confirm")).sendKeys("12345");
+		driver.findElement(By.id("input-telephone")).sendKeys(dataprop.getProperty("telephone"));
+		driver.findElement(By.id("input-password")).sendKeys(dataprop.getProperty("password"));
+		driver.findElement(By.id("input-confirm")).sendKeys(dataprop.getProperty("password"));
 		driver.findElement(By.xpath("//input[@name='agree']")).click();
 		driver.findElement(By.xpath("//input[@value='Continue']")).click();
 		
 		String successMessage= driver.findElement(By.xpath("//h1[normalize-space()='Your Account Has Been Created!']")).getText();
-		Assert.assertEquals(successMessage, "Your Account Has Been Created!");
+		Assert.assertEquals(successMessage, dataprop.getProperty("AccountCreatedSuccessMessage"));
 		Assert.assertTrue(driver.getCurrentUrl().equals("https://tutorialsninja.com/demo/index.php?route=account/success"));
 	
 	}
@@ -52,18 +55,18 @@ public class Register extends Base
 	public void verifyRegistrateringAccountWithAllFields() 
 	{
 		 
-		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys("Adinath");
-		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys("Mhetar");
+		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys(dataprop.getProperty("firstName"));
+		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys(dataprop.getProperty("lastName"));
 		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-telephone")).sendKeys("8928504071");
-		driver.findElement(By.id("input-password")).sendKeys("12345");
-		driver.findElement(By.id("input-confirm")).sendKeys("12345");
+		driver.findElement(By.id("input-telephone")).sendKeys(dataprop.getProperty("telephone"));
+		driver.findElement(By.id("input-password")).sendKeys(dataprop.getProperty("password"));
+		driver.findElement(By.id("input-confirm")).sendKeys(dataprop.getProperty("password"));
 		driver.findElement(By.xpath("//label[normalize-space()='Yes']")).click();
 		driver.findElement(By.xpath("//input[@name='agree']")).click();
 		driver.findElement(By.xpath("//input[@value='Continue']")).click();
 		
 		String successMessage= driver.findElement(By.xpath("//h1[normalize-space()='Your Account Has Been Created!']")).getText();
-		Assert.assertEquals(successMessage, "Your Account Has Been Created!");
+		Assert.assertEquals(successMessage, dataprop.getProperty("AccountCreatedSuccessMessage"));
 		Assert.assertTrue(driver.getCurrentUrl().equals("https://tutorialsninja.com/demo/index.php?route=account/success"));
 		
 		
@@ -74,20 +77,19 @@ public class Register extends Base
 	public void verifyRegistrationAccountWithExistingEmailAddress() 
 	{
 		 	
-		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys("Adinath");
-		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys("Mhetar");
-		driver.findElement(By.id("input-email")).sendKeys("arunmotoori3@gmail.com");
-		driver.findElement(By.id("input-telephone")).sendKeys("8928504071");
-		driver.findElement(By.id("input-password")).sendKeys("12345");
-		driver.findElement(By.id("input-confirm")).sendKeys("12345");
+		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys(dataprop.getProperty("firstName"));
+		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys(dataprop.getProperty("lastName"));
+		driver.findElement(By.id("input-email")).sendKeys(prop.getProperty("email"));
+		driver.findElement(By.id("input-telephone")).sendKeys(dataprop.getProperty("telephone"));
+		driver.findElement(By.id("input-password")).sendKeys(dataprop.getProperty("password"));
+		driver.findElement(By.id("input-confirm")).sendKeys(dataprop.getProperty("password"));
 		driver.findElement(By.xpath("//label[normalize-space()='Yes']")).click();
 		driver.findElement(By.xpath("//input[@name='agree']")).click();
 		driver.findElement(By.xpath("//input[@value='Continue']")).click();
 			
 		String failureMessge=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).isDisplayed());
-		Assert.assertEquals(failureMessge, "Warning: E-Mail Address is already registered!");
-			
+		Assert.assertEquals(failureMessge, dataprop.getProperty("EmailAlreadyExistsWarning"));
 		
 	}
 	
@@ -101,7 +103,7 @@ public class Register extends Base
 
 		String actualPrivacyPolicyWarning=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).isDisplayed());
-		Assert.assertEquals(actualPrivacyPolicyWarning, "Warning: You must agree to the Privacy Policy!");
+		Assert.assertEquals(actualPrivacyPolicyWarning, dataprop.getProperty("privacyPolicyWarning"));
 		
 //		Getting all actual warning messages
 		String FirstNameWarning =driver.findElement(By.xpath("//div[contains(text(),'First Name must be between 1 and 32 characters!')]")).getText();
@@ -111,12 +113,11 @@ public class Register extends Base
 		String PasswordWarning = driver.findElement(By.xpath("//div[contains(text(),'Password must be between 4 and 20 characters!')]")).getText();
 		
 //		verifying all warnings with expected warnings
-		Assert.assertEquals(FirstNameWarning, "First Name must be between 1 and 32 characters!");
-		Assert.assertEquals(LastNameWarning, "Last Name must be between 1 and 32 characters!");
-		Assert.assertEquals(EmailWarning, "E-Mail Address does not appear to be valid!");
-		Assert.assertEquals(TelephoneWarning,"Telephone must be between 3 and 32 characters!");
-		Assert.assertEquals(PasswordWarning, "Password must be between 4 and 20 characters!");
-		
+		Assert.assertEquals(FirstNameWarning, dataprop.getProperty("firstNameWarning"));
+		Assert.assertEquals(LastNameWarning, dataprop.getProperty("lastNameWarning"));
+		Assert.assertEquals(EmailWarning, dataprop.getProperty("emailWarning"));
+		Assert.assertEquals(TelephoneWarning,dataprop.getProperty("telephoneWarning"));
+		Assert.assertEquals(PasswordWarning, dataprop.getProperty("passwordWarning"));
 	
 	}
 	

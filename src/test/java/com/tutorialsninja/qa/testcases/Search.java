@@ -14,11 +14,15 @@ public class Search extends Base
 	
 	WebDriver driver;
 	
+	public Search() {
+		super();
+	}
+	
 	//------------------------------------------------------------------------
 	
 	@BeforeMethod
 	public void setup() {
-		driver =initializeDriver("chrome");
+		driver =initializeDriver(prop.getProperty("browser"));
 	}
 	
 	@AfterMethod
@@ -42,10 +46,10 @@ public class Search extends Base
 	@Test(priority=2)
 	public void verifySearchWithInvalidProduct() 
 	{
-		driver.findElement(By.xpath("//input[@placeholder='Search']")).sendKeys("Honda");
+		driver.findElement(By.xpath("//input[@placeholder='Search']")).sendKeys(dataprop.getProperty("invalidProduct"));
 		driver.findElement(By.xpath("//i[@class='fa fa-search']")).click();
 		String ActualSearchMessage = driver.findElement(By.xpath("//div[@id='content']//h2/following-sibling::p")).getText();
-		Assert.assertEquals(ActualSearchMessage, "There is no product that matches the search criteria.");
+		Assert.assertEquals(ActualSearchMessage, dataprop.getProperty("invalidProductMessage"));
 		
 	}
 	
@@ -54,7 +58,7 @@ public class Search extends Base
 	{
 		driver.findElement(By.xpath("//i[@class='fa fa-search']")).click();
 		String ActualSearchMessage = driver.findElement(By.xpath("//div[@id='content']//h2/following-sibling::p")).getText();
-		Assert.assertEquals(ActualSearchMessage, "There is no product that matches the search criteria.");
+		Assert.assertEquals(ActualSearchMessage, dataprop.getProperty("invalidProductMessage"));
 		
 	}
 	

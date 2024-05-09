@@ -9,20 +9,26 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.tutorialsninja.qa.base.Base;
+import com.tutorialsninja.qa.pages.Accountpage;
+import com.tutorialsninja.qa.pages.Homepage;
+import com.tutorialsninja.qa.pages.Loginpage;
 import com.tutorialsninja.qa.utilities.Utilities;
 
 public class Login extends Base
 {
 	WebDriver driver;
-	
+	public Login() {
+		super();
+	}
 	
 	@BeforeMethod
 	public void setup() 
 	{
 		
-		driver=initializeDriver("chrome");
-		driver.findElement(By.xpath("//span[normalize-space()='My Account']")).click();
-		driver.findElement(By.xpath("//a[normalize-space()='Login']")).click();
+		driver=initializeDriver(prop.getProperty("browser"));
+		Homepage homepage=new Homepage(driver);
+		homepage.clickOnMyAccountDropMenu();
+		homepage.selectLoginOption();
 	}
 	
 	@AfterMethod
@@ -34,12 +40,13 @@ public class Login extends Base
 	@Test(priority = 2)
 	public void verifyLoginWithValidCredentials() 
 	{
+		Loginpage loginpage = new Loginpage(driver);
+		loginpage.enterEmailAddress(prop.getProperty("email"));
+		loginpage.enterPassword(prop.getProperty("password"));
+		loginpage.clickOnLoginButton();
 		
-		driver.findElement(By.id("input-email")).sendKeys("amotooricap3@gmail.com");
-		driver.findElement(By.id("input-password")).sendKeys("12345");
-		driver.findElement(By.xpath("//input[@value='Login']")).click();
-		Assert.assertTrue(driver.findElement(By.xpath("//a[normalize-space()='Edit your account information']")).isDisplayed());
-		
+		Accountpage accountpage = new Accountpage(driver);
+		Assert.assertTrue(accountpage.getDisplayStatusOfEditYourAccountInformationOption());
 		
 	}
 	
@@ -47,14 +54,15 @@ public class Login extends Base
 	@Test(priority = 1)
 	public void verifyLoginWithInvalidCredentials() 
 	{
+		Loginpage loginpage = new Loginpage(driver);
+		loginpage.enterEmailAddress(Utilities.generateEmailTimeStamp());
+		loginpage.enterPassword(dataprop.getProperty("invalidPassword"));
+		loginpage.clickOnLoginButton();
 		
-		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-password")).sendKeys("1234560");
-		driver.findElement(By.xpath("//input[@value='Login']")).click();
-		String warningMessage=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
-		System.out.println(warningMessage);
+		String warningMessage=loginpage.getWarningMessage();
 		
-		Assert.assertEquals(warningMessage, "Warning: No match for E-Mail Address and/or Password.");
+		
+		Assert.assertEquals(warningMessage, dataprop.getProperty("emailpasswordNomatchWarning") );
 		
 		
 	}
@@ -63,30 +71,27 @@ public class Login extends Base
 	@Test(priority=3)
 	public void verifyLoginWithValidEmailInvalidPassword()
 	{
+		Loginpage loginpage = new Loginpage(driver);
+		loginpage.enterEmailAddress(prop.getProperty("email"));
+		loginpage.enterPassword(dataprop.getProperty("invalidPassword"));
+		loginpage.clickOnLoginButton();
 		
-		driver.findElement(By.id("input-email")).sendKeys("amotooricap3@gmail.com");
-		driver.findElement(By.id("input-password")).sendKeys("1234560");
-		driver.findElement(By.xpath("//input[@value='Login']")).click();
-		String warningMessage=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
-		System.out.println(warningMessage);
-		
-		Assert.assertEquals(warningMessage, "Warning: No match for E-Mail Address and/or Password.");
-		
-
-	}
+		String warningMessage=loginpage.getWarningMessage();
+		Assert.assertEquals(warningMessage, dataprop.getProperty("emailpasswordNomatchWarning"));
+	}	
 	
 	
 	@Test(priority=4)
 	public void verifyLoginWithInvalidEmailvalidPassword()
 	{
 		
-		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-password")).sendKeys("12345");
-		driver.findElement(By.xpath("//input[@value='Login']")).click();
-		String warningMessage=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
-		System.out.println(warningMessage);
+		Loginpage loginpage = new Loginpage(driver);
+		loginpage.enterEmailAddress(Utilities.generateEmailTimeStamp());
+		loginpage.enterPassword(prop.getProperty("password"));
+		loginpage.clickOnLoginButton();
 		
-		Assert.assertEquals(warningMessage, "Warning: No match for E-Mail Address and/or Password.");
+		String warningMessage=loginpage.getWarningMessage();
+		Assert.assertEquals(warningMessage, dataprop.getProperty("emailpasswordNomatchWarning"));
 		
 
 	}
@@ -94,12 +99,11 @@ public class Login extends Base
 	@Test(priority=5)
 	public void verifyLoginWithoutCredentials() 
 	{
+		Loginpage loginpage = new Loginpage(driver);
+		loginpage.clickOnLoginButton();
 		
-		driver.findElement(By.xpath("//input[@value='Login']")).click();
-		String warningMessage=driver.findElement(By.xpath("//div[contains(@class,'alert-dismissible')]")).getText();
-		System.out.println(warningMessage);
-		
-		Assert.assertEquals(warningMessage, "Warning: No match for E-Mail Address and/or Password.");
+		String warningMessage=loginpage.getWarningMessage();
+		Assert.assertEquals(warningMessage, dataprop.getProperty("emailpasswordNomatchWarning"));
 		
 	}
 	
