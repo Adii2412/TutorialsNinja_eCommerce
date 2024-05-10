@@ -1,19 +1,15 @@
 package com.tutorialsninja.qa.testcases;
 
-import java.time.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.tutorialsninja.qa.base.Base;
+import com.tutorialsninja.qa.pages.Homepage;
+import com.tutorialsninja.qa.pages.Registerpage;
 import com.tutorialsninja.qa.utilities.Utilities;
 
 public class Register extends Base
@@ -27,22 +23,25 @@ public class Register extends Base
 	public void setup()
 	{
 		driver =initializeDriver(prop.getProperty("browser"));
-		driver.findElement(By.xpath("//span[normalize-space()='My Account']")).click();
-		driver.findElement(By.linkText("Register")).click();
+		Homepage homepage = new Homepage(driver);
+		homepage.clickOnMyAccountDropMenu();
+		homepage.selectRegisterOption();
+		
 	}
 	
 	@Test(priority=1)
 	public void verifyRegisteringAccountWithMandatoryFields() 
 	{
+		Registerpage registerpage = new Registerpage(driver);
+		registerpage.enterFirstName(dataprop.getProperty("firstName"));
+		registerpage.enterLastName(dataprop.getProperty("lastName"));
+		registerpage.enterEmail(Utilities.generateEmailTimeStamp());
+		registerpage.enterTelephone(dataprop.getProperty("telephone"));
+		registerpage.enterPassword(dataprop.getProperty("password"));
+		registerpage.enterConfirmPassword(dataprop.getProperty("password"));
+		registerpage.selectPolicyCheckBox();
+		registerpage.clickOnContinueButton();
 		
-		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys(dataprop.getProperty("firstName"));
-		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys(dataprop.getProperty("lastName"));
-		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-telephone")).sendKeys(dataprop.getProperty("telephone"));
-		driver.findElement(By.id("input-password")).sendKeys(dataprop.getProperty("password"));
-		driver.findElement(By.id("input-confirm")).sendKeys(dataprop.getProperty("password"));
-		driver.findElement(By.xpath("//input[@name='agree']")).click();
-		driver.findElement(By.xpath("//input[@value='Continue']")).click();
 		
 		String successMessage= driver.findElement(By.xpath("//h1[normalize-space()='Your Account Has Been Created!']")).getText();
 		Assert.assertEquals(successMessage, dataprop.getProperty("AccountCreatedSuccessMessage"));
@@ -55,15 +54,17 @@ public class Register extends Base
 	public void verifyRegistrateringAccountWithAllFields() 
 	{
 		 
-		driver.findElement(By.xpath("//input[@id='input-firstname']")).sendKeys(dataprop.getProperty("firstName"));
-		driver.findElement(By.xpath("//input[@id='input-lastname']")).sendKeys(dataprop.getProperty("lastName"));
-		driver.findElement(By.id("input-email")).sendKeys(Utilities.generateEmailTimeStamp());
-		driver.findElement(By.id("input-telephone")).sendKeys(dataprop.getProperty("telephone"));
-		driver.findElement(By.id("input-password")).sendKeys(dataprop.getProperty("password"));
-		driver.findElement(By.id("input-confirm")).sendKeys(dataprop.getProperty("password"));
+		Registerpage registerpage = new Registerpage(driver);
+		registerpage.enterFirstName(dataprop.getProperty("firstName"));
+		registerpage.enterLastName(dataprop.getProperty("lastName"));
+		registerpage.enterEmail(Utilities.generateEmailTimeStamp());
+		registerpage.enterTelephone(dataprop.getProperty("telephone"));
+		registerpage.enterPassword(dataprop.getProperty("password"));
+		registerpage.enterConfirmPassword(dataprop.getProperty("password"));
 		driver.findElement(By.xpath("//label[normalize-space()='Yes']")).click();
-		driver.findElement(By.xpath("//input[@name='agree']")).click();
-		driver.findElement(By.xpath("//input[@value='Continue']")).click();
+		registerpage.selectPolicyCheckBox();
+		registerpage.clickOnContinueButton();
+		
 		
 		String successMessage= driver.findElement(By.xpath("//h1[normalize-space()='Your Account Has Been Created!']")).getText();
 		Assert.assertEquals(successMessage, dataprop.getProperty("AccountCreatedSuccessMessage"));

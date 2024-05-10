@@ -24,6 +24,9 @@ public class Homepage
 	@FindBy(xpath="//a[normalize-space()='Login']")
 	private WebElement Loginbutton;
 	
+	@FindBy(xpath="//span[normalize-space()='My Account']")
+	private WebElement Registerbutton;
+	
 //	Actions
 	
 	public void clickOnMyAccountDropMenu() {
@@ -34,5 +37,10 @@ public class Homepage
 	public void selectLoginOption() {
 		Loginbutton.click();
 	}
+	
+	public void selectRegisterOption() {
+		Registerbutton.click();
+	}
+	
 	
 }
